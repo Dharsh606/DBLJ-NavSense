@@ -1,0 +1,13 @@
+{
+  "nodes": {
+    "entrance": { "id": "entrance", "hint": "Go straight" },
+    "lobby": { "id": "lobby", "hint": "Turn left" },
+    "hallway": { "id": "hallway", "hint": "Go straight" },
+    "cafeteria": { "id": "cafeteria", "hint": "Turn right" }
+  },
+  "edges": {
+    "entrance": [{ "from": "entrance", "to": "lobby" }],
+    "lobby": [{ "from": "lobby", "to": "hallway" }],
+    "hallway": [{ "from": "hallway", "to": "cafeteria" }]
+  }
+}
