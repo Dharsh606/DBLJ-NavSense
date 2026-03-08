@@ -1,0 +1,10 @@
+pluginManagement {
+  repositories {
+    google()
+    mavenCentral()
+  }
+}
+
+rootProject.name = 'AR-Nav-VI'
+
+include ':app'
