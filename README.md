@@ -49,7 +49,11 @@ Designed specifically for:
 
 *(Screenshots to be added)*
 
-## 📱 App Architecture
+## � Latest Release
+
+🚀 **[v1.0.0 Release Notes](./RELEASE_SHORT.md)** - Download APK and view latest features
+
+## �📱 App Architecture
 
 - **Native Android**: Built with Kotlin for optimal performance
 - **Programmatic UI**: Dynamic interface generation for better accessibility
