@@ -21,7 +21,7 @@ import {
   AlertTriangle,
   CheckCircle
 } from 'lucide-react'
-import { navigationService, Location, Place, Route } from "../../lib/navigation"   
+import { navigationService, Location, Place, Route } from '@/lib/navigation'   
 
 interface SystemStatus {
   location: boolean
