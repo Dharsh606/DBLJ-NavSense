@@ -1,42 +1,43 @@
 {
-  "name": "ar-nav-vi",
-  "version": "0.1.0",
+  "name": "dblj-navsense",
+  "version": "1.0.0",
+  "description": "AI Navigation Assistant for Visually Impaired Users",
   "private": true,
-  "main": "index.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "prebuild": "expo prebuild",
-    "typecheck": "tsc --noEmit",
-    "build:apk": "cd android && ./gradlew assembleRelease",
-    "lint": "eslint .",
-    "ios": "expo run:ios"
-  },
-  "expo": {
-    "sdkVersion": "latest"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export",
+    "android:build": "npm run build && npm run export && npx cap sync && npx cap open android",
+    "android:run": "npm run build && npm run export && npx cap sync && npx cap run android",
+    "android:apk": "npm run build && npm run export && npx cap sync && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.23.1",
-    "@react-navigation/native": "^6.1.7",
-    "@react-navigation/native-stack": "^6.9.12",
-    "expo": "^51.0.0",
-    "expo-camera": "~15.0.16",
-    "expo-constants": "~16.0.1",
-    "expo-haptics": "~13.0.1",
-    "expo-location": "~17.0.1",
-    "expo-network": "~6.0.1",
-    "expo-sms": "~12.0.1",
-    "expo-speech": "~12.0.2",
-    "react": "18.2.0",
-    "react-native": "0.74.5",
-    "react-native-safe-area-context": "^4.7.4",
-    "react-native-screens": "~3.31.0"
+    "@capacitor/android": "^5.7.0",
+    "@capacitor/cli": "^5.7.0",
+    "@capacitor/core": "^5.7.0",
+    "@googlemaps/js-api-loader": "^1.16.2",
+    "@googlemaps/react-wrapper": "^1.1.35",
+    "@tensorflow-models/coco-ssd": "^2.2.2",
+    "@tensorflow/tfjs": "^4.14.0",
+    "@types/google.maps": "^3.58.1",
+    "clsx": "^2.0.0",
+    "framer-motion": "^10.16.16",
+    "lucide-react": "^0.294.0",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
-    "@types/react": "^18.2.66",
-    "@types/react-native": "^0.73.0",
-    "@babel/core": "^7.24.0",
-    "eslint": "^9.3.0"
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
   }
 }
