@@ -14,6 +14,7 @@ export interface EmergencyContact {
     allergies: string
     medications: string
     emergencyContact: string
+  }
   lastContacted: number
   priority: number // 1-5, 1 being highest
 }
@@ -26,7 +27,7 @@ export interface EmergencyAlert {
   location?: {
     latitude: number
     longitude: number
-    address: string
+  }
   timestamp: number
   resolved: boolean
   contactsNotified: string[]
@@ -54,6 +55,17 @@ class EmergencyContactService {
   constructor() {
     this.settings = this.loadSettings()
     this.loadContacts()
+  }
+
+  // Text-to-speech for emergency alerts
+  private speak(message: string): void {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(message)
+      utterance.rate = 1.1
+      utterance.pitch = 1.0
+      utterance.volume = 1.0
+      window.speechSynthesis.speak(utterance)
+    }
   }
 
   // Load emergency settings
@@ -232,14 +244,18 @@ class EmergencyContactService {
   }
 
   // Trigger emergency alert
-  async triggerEmergencyAlert(type: EmergencyAlert['type'], message?: string, location?: { latitude: number; longitude: number }): Promise<void> {
+  async triggerEmergencyAlert(type: EmergencyAlert['type'], message?: string, location?: { latitude: number; longitude: number; address?: string }): Promise<void> {
     const alert: EmergencyAlert = {
       id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type,
       severity: this.getSeverityLevel(type),
       message: message || `Emergency alert: ${type}`,
       timestamp: Date.now(),
-      location,
+      location: location ? {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        address: location.address || 'Unknown location'
+      } : undefined,
       resolved: false,
       contactsNotified: []
     }
@@ -251,7 +267,7 @@ class EmergencyContactService {
     
     // Auto-call emergency services if enabled
     if (this.settings.callEmergency) {
-      await this.callEmergencyServices(type, location)
+      await this.callEmergencyService(type, alert)
     }
     
     // Send SMS if enabled
@@ -261,7 +277,12 @@ class EmergencyContactService {
     
     // Send email if enabled
     if (this.settings.sendEmail) {
-      await this.sendEmergencyEmail(alert)
+      const primaryContacts = this.getPrimaryContacts()
+      for (const contact of primaryContacts) {
+        if (contact.email) {
+          await this.sendEmail(contact.email, 'Emergency Alert', alert.message, alert)
+        }
+      }
     }
     
     console.log(`Emergency alert triggered: ${type}`)
@@ -458,7 +479,7 @@ class EmergencyContactService {
       this.speak('Testing emergency system...')
       
       // Test alert
-      await this.triggerEmergencyAlert('test', 'This is a test emergency alert', {
+      await this.triggerEmergencyAlert('sos', 'This is a test emergency alert', {
         latitude: 40.7128,
         longitude: -74.0060
       })
