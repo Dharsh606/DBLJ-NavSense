@@ -39,12 +39,12 @@ export default function AdvancedCameraDetection() {
       setDetectionHistory(prev => [...prev.slice(-9), detectedObstacles])
       
       // Voice feedback for critical obstacles
-      const criticalObstacles = detectedObstacles.filter(obj => 
+      const criticalObstacles = detectedObstacles.filter((obj: DetectedObject) => 
         ['person', 'car', 'bicycle', 'motorcycle'].includes(obj.class)
       )
       
       if (criticalObstacles.length > 0) {
-        speakWarning(`Warning: ${criticalObstacles.map(obj => obj.class).join(', ')} detected nearby`)
+        speakWarning(`Warning: ${criticalObstacles.map((obj: DetectedObject) => obj.class).join(', ')} detected nearby`)
       }
     }
 
