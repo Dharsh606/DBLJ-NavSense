@@ -297,7 +297,7 @@ class EmergencyContactService {
       sos: 'critical'
     }
     
-    return severityMap[type] || 'medium'
+    return severityMap[type] || ('medium' as const)
   }
 
   // Notify emergency contacts
