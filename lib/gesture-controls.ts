@@ -469,7 +469,7 @@ class GestureControlService {
       decrease_value: [50, 30, 50]
     }
     
-    return patterns[action] || [50]
+    return (patterns as any)[action] || [50]
   }
 
   // Show visual feedback
