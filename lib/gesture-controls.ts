@@ -6,7 +6,7 @@ export interface Gesture {
   name: string
   type: 'swipe' | 'tap' | 'double_tap' | 'long_press' | 'pinch' | 'rotate' | 'scroll'
   description: string
-  direction?: 'up' | 'down' | 'left' | 'right' | 'horizontal' | 'vertical' | 'clockwise' | 'counter_clockwise'
+  direction?: 'up' | 'down' | 'left' | 'right' | 'horizontal' | 'vertical' | 'clockwise' | 'counter_clockwise' | 'out' | 'in'
   threshold: number
   action: string
 }
