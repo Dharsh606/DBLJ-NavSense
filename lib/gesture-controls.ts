@@ -167,10 +167,10 @@ class GestureControlService {
         id: 'pinch_out',
         name: 'Pinch Out',
         type: 'pinch',
-        description: 'Pinch out to zoom in',
+        description: 'Pinch out to zoom out',
         direction: 'out',
         threshold: 30,
-        action: 'zoom_in'
+        action: 'zoom_out'
       },
       {
         id: 'pinch_in',
