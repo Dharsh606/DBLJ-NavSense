@@ -156,7 +156,6 @@ class GestureControlService {
         name: 'Long Press',
         type: 'long_press',
         description: 'Long press to access context menu or activate emergency',
-        direction: 'center',
         threshold: 0,
         action: 'context_menu'
       }
