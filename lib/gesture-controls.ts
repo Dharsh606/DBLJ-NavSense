@@ -573,7 +573,7 @@ class GestureControlService {
         decrease_value: 'Value decreased'
       }
       
-      const message = messages[action] || 'Gesture action'
+      const message = (messages as any)[action] || 'Gesture action'
       const utterance = new SpeechSynthesisUtterance(message)
       utterance.rate = 1.2
       utterance.pitch = 1.0
