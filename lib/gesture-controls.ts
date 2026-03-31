@@ -514,6 +514,16 @@ class GestureControlService {
     })
   }
 
+  // Show visual feedback overlay
+  private showGestureOverlay(): void {
+    const overlays = document.querySelectorAll('.gesture-feedback')
+    overlays.forEach(overlay => {
+      if (overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay)
+      }
+    })
+  }
+
   // Play gesture sound
   private playGestureSound(action: string): void {
     try {
