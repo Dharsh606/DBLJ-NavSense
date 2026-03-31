@@ -554,7 +554,7 @@ class GestureControlService {
       decrease_value: 'data:audio/wav;base64,UklGRiQAAABQAA...'
     }
     
-    return soundMap[action] || soundMap.confirm
+    return (soundMap as any)[action] || soundMap.confirm
   }
 
   // Speak gesture action
