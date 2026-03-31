@@ -4,17 +4,17 @@
 export interface LocationPoint {
   latitude: number
   longitude: number
-  altitude?: number
-  accuracy: number
+  altitude?: number | null
+  accuracy: number | null
   timestamp: number
-  speed?: number
-  heading?: number
+  speed?: number | null
+  heading?: number | null
 }
 
 export interface LocationHistory {
   id: string
   userId: string
-  locations: LocationPoint[]
+  locations: (LocationPoint | null)[]
   startTime: Date
   endTime?: Date
   purpose: 'navigation' | 'emergency' | 'exploration' | 'commute'
@@ -66,20 +66,21 @@ class GPSTrackingService {
           {
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 0,
-            desiredAccuracy: 10 // meters
+            maximumAge: 0
           }
         )
       })
 
-      this.currentLocation = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        altitude: position.coords.altitude,
-        accuracy: position.coords.accuracy,
-        timestamp: Date.now(),
-        speed: position.coords.speed,
-        heading: position.coords.heading
+      if (position && position.coords) {
+        this.currentLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          altitude: position.coords.altitude || null,
+          accuracy: position.coords.accuracy || null,
+          timestamp: Date.now(),
+          speed: position.coords.speed || null,
+          heading: position.coords.heading || null
+        }
       }
 
       // Start continuous tracking
