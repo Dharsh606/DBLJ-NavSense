@@ -173,7 +173,7 @@ class ObstacleDetectionService {
   }
 
   // Calculate overall confidence level
-  private calculateConfidence(obstacles: DetectedObject[]): number {
+  calculateConfidence(obstacles: DetectedObject[]): number {
     if (obstacles.length === 0) return 0
     
     const totalScore = obstacles.reduce((sum, obj) => sum + obj.score, 0)
@@ -251,27 +251,6 @@ class ObstacleDetectionService {
     return {
       isInitialized: this.isInitialized,
       isDetecting: this.isDetecting
-    }
-  }
-
-  // Calculate overall confidence level
-  calculateConfidence(obstacles: DetectedObject[]): number {
-    if (obstacles.length === 0) return 0
-    
-    const totalScore = obstacles.reduce((sum, obj) => sum + obj.score, 0)
-    return totalScore / obstacles.length
-  }
-
-  // Cleanup resources
-  dispose(): void {
-    this.stopDetection()
-    this.isInitialized = false
-    this.isDetecting = false
-    
-    if (this.model) {
-      // Dispose TensorFlow model
-      this.model.dispose()
-      this.model = null
     }
   }
 }
