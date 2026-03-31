@@ -253,8 +253,7 @@ class EmergencyContactService {
       timestamp: Date.now(),
       location: location ? {
         latitude: location.latitude,
-        longitude: location.longitude,
-        address: location.address || 'Unknown location'
+        longitude: location.longitude
       } : undefined,
       resolved: false,
       contactsNotified: []
