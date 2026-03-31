@@ -289,7 +289,7 @@ class EmergencyContactService {
 
   // Get severity level for emergency type
   private getSeverityLevel(type: EmergencyAlert['type']): EmergencyAlert['severity'] {
-    const severityMap = {
+    const severityMap: Record<EmergencyAlert['type'], EmergencyAlert['severity']> = {
       medical: 'high',
       police: 'critical',
       fire: 'critical',
