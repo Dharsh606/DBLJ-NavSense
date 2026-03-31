@@ -333,8 +333,8 @@ class EmergencyContactService {
       await this.sendEmail(contact.email, 'Emergency Alert', message, alert)
     }
     
-    if (contact.emergencyContact) {
-      await this.callEmergencyService(contact.emergencyContact, alert)
+    if ((contact as any).emergencyContact) {
+      await this.callEmergencyService((contact as any).emergencyContact, alert)
     }
   }
 
@@ -422,9 +422,10 @@ class EmergencyContactService {
     if (!this.settings.geofenceEnabled) return false
     
     const distance = this.calculateDistance(
-      this.settings.geofenceRadius,
+      location.latitude,
       location.longitude,
-      location.latitude
+      0, // Reference point (lat2)
+      0  // Reference point (lon2)
     )
     
     if (distance <= this.settings.geofenceRadius) {
