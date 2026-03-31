@@ -1,28 +1,32 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  ArrowLeft,
-  HelpCircle,
+  MapPin, 
+  Mic, 
+  Camera, 
+  Navigation, 
+  AlertTriangle,
   Volume2,
   VolumeX,
-  Navigation,
-  Camera,
-  Mic,
-  Bluetooth,
-  Phone,
-  MapPin,
-  Eye,
-  Settings,
-  BookOpen,
-  Play,
-  Pause,
   ChevronDown,
   ChevronUp,
+  Play,
+  Pause,
+  SkipForward,
+  HelpCircle,
+  Settings,
+  Eye,
+  Shield,
+  Smartphone,
+  ArrowLeft,
   CheckCircle,
+  BookOpen,
+  Phone,
+  Mail,
   AlertCircle,
-  Mail
+  Bluetooth
 } from 'lucide-react'
 
 interface HelpSection {
@@ -38,6 +42,11 @@ export default function HelpPage() {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [isReading, setIsReading] = useState(false)
   const [currentReadingIndex, setCurrentReadingIndex] = useState(0)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const helpSections: HelpSection[] = [
     {
@@ -230,19 +239,21 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm p-4">
-        <div className="flex items-center justify-between max-w-6xl mx-auto">
-          <div className="flex items-center">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.history.back()}
-              className="p-2 rounded-lg hover:bg-gray-100 mr-3"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </motion.button>
-            <img src="/logo.png" alt="DBLJ NavSense" className="w-7 h-7 mr-2" />
+      {isClient ? (
+        <>
+          {/* Header */}
+          <div className="bg-white shadow-sm p-4">
+            <div className="flex items-center justify-between max-w-6xl mx-auto">
+              <div className="flex items-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => window.history.back()}
+                  className="p-2 rounded-lg hover:bg-gray-100 mr-3"
+                >
+                  <ArrowLeft className="w-6 h-6" />
+                </motion.button>
+                <img src="/logo.png" alt="DBLJ NavSense" className="w-7 h-7 mr-2" />
             <h1 className="text-xl font-semibold">Help & Accessibility Guide</h1>
           </div>
           <div className="flex items-center space-x-2">
@@ -452,6 +463,15 @@ export default function HelpPage() {
           </div>
         </motion.div>
       </div>
+        </>
+      ) : (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading help content...</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

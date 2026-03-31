@@ -386,6 +386,70 @@ export default function HomePage() {
       }
     }
     
+    // NEW: Advanced Features Voice Commands
+    else if (command.includes('gps tracking') || command.includes('location tracking') || command.includes('gps')) {
+      provideFeedback('Opening GPS tracking', true)
+      speak('Opening GPS tracking with location history and analytics')
+      setTimeout(() => {
+        window.location.href = '/gps-tracking'
+      }, 1500)
+    }
+    
+    else if (command.includes('camera detection') || command.includes('obstacle detection') || command.includes('ai detection')) {
+      provideFeedback('Opening AI obstacle detection', true)
+      speak('Opening AI-powered obstacle detection with computer vision')
+      setTimeout(() => {
+        window.location.href = '/advanced-camera-detection'
+      }, 1500)
+    }
+    
+    else if (command.includes('emergency contacts') || command.includes('emergency')) {
+      provideFeedback('Opening emergency contacts', true)
+      speak('Opening emergency contact system with auto-notification')
+      setTimeout(() => {
+        window.location.href = '/emergency-contacts'
+      }, 1500)
+    }
+    
+    else if (command.includes('profile') || command.includes('user profile') || command.includes('preferences')) {
+      provideFeedback('Opening user profile', true)
+      speak('Opening user profile and preferences')
+      setTimeout(() => {
+        window.location.href = '/profile'
+      }, 1500)
+    }
+    
+    else if (command.includes('languages') || command.includes('multi language') || command.includes('language')) {
+      provideFeedback('Opening language settings', true)
+      speak('Opening multi-language support with English and Indian languages')
+      setTimeout(() => {
+        window.location.href = '/languages'
+      }, 1500)
+    }
+    
+    else if (command.includes('themes') || command.includes('dark mode') || command.includes('accessibility')) {
+      provideFeedback('Opening themes and accessibility', true)
+      speak('Opening themes and accessibility settings with dark mode options')
+      setTimeout(() => {
+        window.location.href = '/themes'
+      }, 1500)
+    }
+    
+    else if (command.includes('gesture controls') || command.includes('gestures')) {
+      provideFeedback('Gesture controls are active', true)
+      speak('Gesture controls are enabled. Use swipe gestures for navigation')
+    }
+    
+    else if (command.includes('haptic feedback') || command.includes('vibration')) {
+      provideFeedback('Haptic feedback is active', true)
+      speak('Haptic feedback is enabled for better accessibility')
+    }
+    
+    else if (command.includes('offline maps') || command.includes('offline')) {
+      provideFeedback('Offline maps are available', true)
+      speak('Offline maps are cached for navigation without internet')
+    }
+    
     else if (command.includes('next step') || command.includes('continue')) {
       if (isNavigating && currentRoute) {
         const nextStep = navigationService.getNextStep(currentStepIndex)
@@ -530,7 +594,7 @@ export default function HomePage() {
     // Help commands with enhanced feedback
     else if (command.includes('help')) {
       provideFeedback('Opening help guide', true)
-      speak('Opening help guide. You can say: find, navigate to, stop navigation, next step, repeat, emergency, settings, or location.')
+      speak('Opening help guide. You can say: gps tracking, camera detection, emergency contacts, profile, themes, languages, navigate to, stop navigation, next step, repeat, emergency, settings, or location.')
       setTimeout(() => {
         window.location.href = '/help'
       }, 1500)
@@ -538,7 +602,7 @@ export default function HomePage() {
     
     // Enhanced unknown command handling
     else {
-      const suggestions = 'I didn\'t understand that command. Please try saying: find restaurant, navigate to coffee shop, stop navigation, next step, emergency, settings, or location.'
+      const suggestions = 'I didn\'t understand that command. Please try saying: gps tracking, camera detection, emergency contacts, profile, themes, languages, navigate to coffee shop, stop navigation, next step, emergency, settings, or location.'
       provideFeedback(suggestions, false)
       speak(suggestions)
     }
@@ -960,92 +1024,169 @@ export default function HomePage() {
             )}
             
             <div className="mt-4 text-center">
-              <p className="text-xs text-white/60">Try: "navigation", "camera", "emergency", "where am i"</p>
+              <p className="text-xs text-white/60">Try: "gps tracking", "camera detection", "emergency", "profile", "themes", "where am i"</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Main Features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+        {/* Advanced Features */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* GPS Tracking */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.4 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleNavigation}
+            onClick={() => window.location.href = '/gps-tracking'}
             className="card cursor-pointer"
           >
             <div className="flex flex-col items-center text-center">
               <MapPin className="w-12 h-12 text-primary-500 mb-3" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Start Navigation</h3>
-              <p className="text-gray-600 text-sm">Get real-time navigation guidance</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">GPS Tracking</h3>
+              <p className="text-gray-600 text-sm">Real-time location tracking with history</p>
             </div>
           </motion.div>
 
+          {/* AI Obstacle Detection */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.5 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleCamera}
+            onClick={() => window.location.href = '/advanced-camera-detection'}
             className="card cursor-pointer"
           >
             <div className="flex flex-col items-center text-center">
               <Camera className="w-12 h-12 text-secondary-500 mb-3" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">AR Camera Detection</h3>
-              <p className="text-gray-600 text-sm">Detect obstacles in your path</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">AI Obstacle Detection</h3>
+              <p className="text-gray-600 text-sm">Computer vision obstacle detection</p>
             </div>
           </motion.div>
 
+          {/* Emergency Contacts */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.6 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleBluetooth}
+            onClick={() => window.location.href = '/emergency-contacts'}
             className="card cursor-pointer"
           >
             <div className="flex flex-col items-center text-center">
-              <Bluetooth className="w-12 h-12 text-blue-500 mb-3" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Bluetooth Devices</h3>
-              <p className="text-gray-600 text-sm">Connect to assistive devices</p>
+              <Phone className="w-12 h-12 text-red-500 mb-3" />
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Emergency Contacts</h3>
+              <p className="text-gray-600 text-sm">Auto-notification emergency system</p>
             </div>
           </motion.div>
 
+          {/* User Profile */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.7 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.location.href = '/profile'}
+            className="card cursor-pointer"
+          >
+            <div className="flex flex-col items-center text-center">
+              <Settings className="w-12 h-12 text-purple-500 mb-3" />
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">User Profile</h3>
+              <p className="text-gray-600 text-sm">Personalization & preferences</p>
+            </div>
+          </motion.div>
+
+          {/* Multi-Language */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.8 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleHistory}
+            onClick={() => window.location.href = '/languages'}
             className="card cursor-pointer"
           >
             <div className="flex flex-col items-center text-center">
-              <History className="w-12 h-12 text-purple-500 mb-3" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Navigation History</h3>
-              <p className="text-gray-600 text-sm">View your past routes</p>
+              <Mic className="w-12 h-12 text-green-500 mb-3" />
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Multi-Language</h3>
+              <p className="text-gray-600 text-sm">English + 6 Indian languages</p>
             </div>
           </motion.div>
 
+          {/* Themes */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.9 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleEmergency}
-            className="card cursor-pointer border-red-200 bg-red-50"
+            onClick={() => window.location.href = '/themes'}
+            className="card cursor-pointer"
           >
             <div className="flex flex-col items-center text-center">
-              <Phone className="w-12 h-12 text-red-500 mb-3" />
-              <h3 className="text-lg font-semibold text-red-800 mb-2">Emergency Assistance</h3>
-              <p className="text-red-600 text-sm">Get help immediately</p>
+              <Shield className="w-12 h-12 text-indigo-500 mb-3" />
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Themes & Accessibility</h3>
+              <p className="text-gray-600 text-sm">Dark mode & accessibility themes</p>
             </div>
           </motion.div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 1.0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.location.href = '/navigation'}
+            className="card cursor-pointer"
+          >
+            <Navigation className="w-8 h-8 text-blue-500 mb-2 mx-auto" />
+            <span className="text-sm font-medium">Navigate</span>
+          </motion.button>
+
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 1.1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.location.href = '/help'}
+            className="card cursor-pointer"
+          >
+            <HelpCircle className="w-8 h-8 text-green-500 mb-2 mx-auto" />
+            <span className="text-sm font-medium">Help</span>
+          </motion.button>
+
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 1.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.location.href = '/settings'}
+            className="card cursor-pointer"
+          >
+            <Settings className="w-8 h-8 text-purple-500 mb-2 mx-auto" />
+            <span className="text-sm font-medium">Settings</span>
+          </motion.button>
+
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 1.3 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={startEmergencyAlert}
+            className="card cursor-pointer bg-red-50 border-red-200"
+          >
+            <AlertTriangle className="w-8 h-8 text-red-500 mb-2 mx-auto" />
+            <span className="text-sm font-medium text-red-700">Emergency</span>
+          </motion.button>
         </div>
 
         {/* Quick Access */}
