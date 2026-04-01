@@ -251,7 +251,7 @@ export default function GPSTrackingPage() {
                     {currentLocation.latitude.toFixed(6)}°, {currentLocation.longitude.toFixed(6)}°
                   </div>
                   <div className="text-gray-300 text-sm">
-                    Accuracy: {currentLocation.accuracy.toFixed(0)}m
+                    Accuracy: {currentLocation.accuracy?.toFixed(0) || 'N/A'}m
                     {currentLocation.speed !== undefined && (
                       <>
                         Speed: {formatSpeed(currentLocation.speed)}
