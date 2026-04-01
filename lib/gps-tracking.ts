@@ -211,7 +211,7 @@ class GPSTrackingService {
       if (this.currentLocation) {
         // Periodic location announcements
         this.speakLocationUpdate(
-          `Location: ${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}. Accuracy: ${this.currentLocation.accuracy.toFixed(0)} meters`
+          `Location: ${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}. Accuracy: ${this.currentLocation.accuracy?.toFixed(0) || 'unknown'} meters`
         )
       }
     }, 30000) // Every 30 seconds
