@@ -46,7 +46,7 @@ export default function HomePage() {
     camera: false,
     microphone: false,
     bluetooth: false,
-    internet: navigator.onLine
+    internet: typeof navigator !== 'undefined' ? navigator.onLine : true,
   })
   
   // Navigation states
