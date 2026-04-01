@@ -232,7 +232,7 @@ class ObstacleDetectionService {
     
     // Stop camera stream
     const videoElement = document.querySelector('video') as HTMLVideoElement
-    if (videoElement && videoElement.srcObject) {
+    if (videoElement && videoElement.srcObject instanceof MediaStream) {
       const stream = videoElement.srcObject
       stream.getTracks().forEach(track => track.stop())
     }
