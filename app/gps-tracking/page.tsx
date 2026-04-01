@@ -252,10 +252,10 @@ export default function GPSTrackingPage() {
                   </div>
                   <div className="text-gray-300 text-sm">
                     Accuracy: {currentLocation.accuracy?.toFixed(0) || 'N/A'}m
-                    {currentLocation.speed !== undefined && (
+                    {currentLocation.speed !== undefined && currentLocation.speed !== null && (
                       <>
                         Speed: {formatSpeed(currentLocation.speed)}
-                        {currentLocation.heading !== undefined && (
+                        {currentLocation.heading !== undefined && currentLocation.heading !== null && (
                           <> • Heading: {currentLocation.heading.toFixed(0)}°</>
                         )}
                       </>
