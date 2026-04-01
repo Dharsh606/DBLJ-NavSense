@@ -118,7 +118,7 @@ class GPSTrackingService {
       
     } catch (error) {
       console.error('Failed to start GPS tracking:', error)
-      this.errorCallback?.(error)
+      this.errorCallback?.(error as Error)
     }
   }
 
