@@ -11,6 +11,7 @@ export interface Language {
   currency: string
   emergency: string
   numbers: string
+  flag?: string
 }
 
 export interface Translation {
