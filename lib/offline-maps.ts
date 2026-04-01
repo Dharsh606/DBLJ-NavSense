@@ -45,6 +45,11 @@ class OfflineMapsService {
     this.loadRoutes()
   }
 
+  // Routes are loaded from IndexedDB in loadCache().
+  private async loadRoutes(): Promise<void> {
+    return
+  }
+
   // Initialize offline map system
   async initialize(): Promise<void> {
     try {
@@ -68,7 +73,7 @@ class OfflineMapsService {
   // Create IndexedDB for tile caching
   private async createCacheDatabase(): Promise<void> {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('OfflineMapsDB', 1, 'OfflineMapsCache')
+      const request = indexedDB.open('OfflineMapsDB', 1)
       
       request.onerror = () => {
         reject(new Error('Failed to open IndexedDB'))
@@ -95,7 +100,7 @@ class OfflineMapsService {
   // Load cached tiles
   private async loadCache(): Promise<void> {
     try {
-      const request = indexedDB.open('OfflineMapsDB', 1, 'OfflineMapsCache')
+      const request = indexedDB.open('OfflineMapsDB', 1)
       
       request.onsuccess = (event) => {
         const db = event.target.result
@@ -148,7 +153,7 @@ class OfflineMapsService {
   // Save tile to cache
   private async saveTile(tile: OfflineMapTile): Promise<void> {
     try {
-      const request = indexedDB.open('OfflineMapsDB', 1, 'OfflineMapsCache')
+      const request = indexedDB.open('OfflineMapsDB', 1)
       
       request.onsuccess = (event) => {
         const db = event.target.result
@@ -175,7 +180,7 @@ class OfflineMapsService {
   // Save route to cache
   private async saveRoute(route: OfflineRoute): Promise<void> {
     try {
-      const request = indexedDB.open('OfflineMapsDB', 1, 'OfflineMapsCache')
+      const request = indexedDB.open('OfflineMapsDB', 1)
       
       request.onsuccess = (event) => {
         const db = event.target.result
@@ -288,7 +293,7 @@ class OfflineMapsService {
   // Update cache database
   private updateCacheDatabase(): void {
     try {
-      const request = indexedDB.open('OfflineMapsDB', 1, 'OfflineMapsCache')
+      const request = indexedDB.open('OfflineMapsDB', 1)
       
       request.onsuccess = (event) => {
         const db = event.target.result
@@ -312,7 +317,7 @@ class OfflineMapsService {
   // Update routes database
   private updateRoutesDatabase(): void {
     try {
-      const request = indexedDB.open('OfflineMapsDB', 1, 'OfflineMapsCache')
+      const request = indexedDB.open('OfflineMapsDB', 1)
       
       request.onsuccess = (event) => {
         const db = event.target.result
@@ -368,7 +373,7 @@ class OfflineMapsService {
   // Clear cache
   async clearCache(): Promise<void> {
     try {
-      const request = indexedDB.open('OfflineMapsDB', 1, 'OfflineMapsCache')
+      const request = indexedDB.open('OfflineMapsDB', 1)
       
       request.onsuccess = (event) => {
         const db = event.target.result
@@ -383,7 +388,7 @@ class OfflineMapsService {
         const routeStore = routeTransaction.objectStore('routes')
         routeStore.clear()
         
-        transaction.oncomplete = () => {
+        routeTransaction.oncomplete = () => {
           this.cache.clear()
           this.routes.clear()
           console.log('Cache cleared successfully')
