@@ -423,7 +423,7 @@ class VoiceCommandService {
       
       // Boost confidence for high keyword density
       const keywordCount = intent.keywords.reduce((count, keyword) => 
-        count + (transcript.toLowerCase().split(' ').filter(word => word.includes(keyword)).length
+        count + (transcript.toLowerCase().split(' ').filter(word => word.includes(keyword)).length)
       , 0)
       
       if (keywordCount > 0) {
