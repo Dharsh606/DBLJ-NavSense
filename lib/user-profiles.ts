@@ -390,7 +390,7 @@ class UserProfileService {
 
   // Get accessibility recommendations
   getAccessibilityRecommendations(): Array<{ feature: string; recommendation: string; priority: 'high' | 'medium' | 'low' }> {
-    const recommendations = []
+    const recommendations: Array<{ feature: string; recommendation: string; priority: 'high' | 'medium' | 'low' }> = []
     const preferences = this.getPreferences()
     
     if (this.currentUser?.accessibilityNeeds.visualImpairment === 'severe') {
