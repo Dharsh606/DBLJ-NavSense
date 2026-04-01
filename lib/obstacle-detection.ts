@@ -60,9 +60,9 @@ class ObstacleDetectionService {
       // Get camera stream
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facing: 'environment',
-          width: 640,
-          height: 480
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 640 },
+          height: { ideal: 480 }
         }
       })
 
