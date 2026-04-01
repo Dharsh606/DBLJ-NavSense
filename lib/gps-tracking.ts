@@ -86,12 +86,14 @@ class GPSTrackingService {
       // Start continuous tracking
       this.watchId = navigator.geolocation.watchPosition(
         this.handlePositionUpdate.bind(this),
-        this.handleError.bind(this),
+        (error: GeolocationPositionError) => {
+          console.error('GPS Error:', error.message)
+          this.speakLocationUpdate(`GPS error: ${error.message}`)
+        },
         {
           enableHighAccuracy: true,
           timeout: 10000,
-          maximumAge: 0,
-          desiredAccuracy: 5 // meters
+          maximumAge: 0
         }
       )
 
