@@ -561,7 +561,7 @@ class ThemeService {
       info: '#0066cc' // Blue
     }
     
-    Object.keys(colorBlindColors).forEach(key => {
+    (Object.keys(colorBlindColors) as Array<keyof typeof colorBlindColors>).forEach(key => {
       const cssVar = `--color-${key.replace('_', '-')}`
       root.style.setProperty(cssVar, colorBlindColors[key])
     })
