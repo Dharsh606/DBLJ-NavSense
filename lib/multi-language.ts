@@ -14,9 +14,7 @@ export interface Language {
   flag?: string
 }
 
-export interface Translation {
-  [key: string]: string
-}
+export type Translation = LocalizedContent
 
 export interface LocalizedContent {
   welcome: string
@@ -75,7 +73,7 @@ export interface LocalizedContent {
 
 class MultiLanguageService {
   private currentLanguage: string = 'en-US'
-  private translations: Map<string, Translation> = new Map()
+  private translations: Map<string, LocalizedContent> = new Map()
   private fallbackLanguage: string = 'en-US'
 
   // Supported languages
@@ -279,7 +277,7 @@ class MultiLanguageService {
 
     // Get translation for current language
     const translations = this.getLanguageTranslations(language.code)
-    let translation = translations[key] || key
+    let translation = this.getByPath(translations, key) ?? key
     
     // Replace parameters in translation
     if (params) {
@@ -292,7 +290,7 @@ class MultiLanguageService {
   }
 
   // Get translations for specific language
-  private getLanguageTranslations(languageCode: string): Translation {
+  private getLanguageTranslations(languageCode: string): LocalizedContent {
     const translations = this.translations.get(languageCode)
     
     if (translations) {
@@ -304,7 +302,7 @@ class MultiLanguageService {
   }
 
   // Get fallback translations (English)
-  private getFallbackTranslations(): Translation {
+  private getFallbackTranslations(): LocalizedContent {
     return {
       welcome: 'Welcome to DBLJ NavSense',
       navigation: 'Navigation',
@@ -361,10 +359,20 @@ class MultiLanguageService {
     }
   }
 
+  private getByPath(obj: LocalizedContent, key: string): string | null {
+    const parts = key.split('.').filter(Boolean)
+    let current: any = obj
+    for (const part of parts) {
+      if (current == null || typeof current !== 'object' || !(part in current)) return null
+      current = current[part]
+    }
+    return typeof current === 'string' ? current : null
+  }
+
   // Initialize translations for all supported languages
   initializeTranslations(): void {
     // English translations
-    const englishTranslations: Translation = {
+    const englishTranslations: LocalizedContent = {
       welcome: 'Welcome to DBLJ NavSense',
       navigation: 'Navigation',
       emergency: 'Emergency',
@@ -420,7 +428,7 @@ class MultiLanguageService {
     }
 
     // Hindi translations
-    const hindiTranslations: Translation = {
+    const hindiTranslations: LocalizedContent = {
       welcome: 'डीबीएलजे नेवसेंस का स्वागत में आपका स्वागत में',
       navigation: 'नेविगेशन',
       emergency: 'आपातकाली',
