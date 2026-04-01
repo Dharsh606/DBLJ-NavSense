@@ -1,6 +1,14 @@
 // Advanced Voice Command Recognition with AI
 // Intelligent voice command processing with natural language understanding and AI enhancement
 
+// Type declarations for Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition: any
+    webkitSpeechRecognition: any
+  }
+}
+
 export interface VoiceCommand {
   command: string
   confidence: number
@@ -37,7 +45,7 @@ export interface VoiceSettings {
 }
 
 class VoiceCommandService {
-  private recognition: SpeechRecognition | null = null
+  private recognition: (typeof window.SpeechRecognition) | null = null
   private isListening: boolean = false
   private commandHistory: VoiceCommand[] = []
   private settings: VoiceSettings
