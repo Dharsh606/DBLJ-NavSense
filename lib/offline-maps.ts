@@ -79,8 +79,8 @@ class OfflineMapsService {
         reject(new Error('Failed to open IndexedDB'))
       }
       
-      request.onsuccess = (event) => {
-        const db = event.target.result
+      request.onsuccess = () => {
+        const db = request.result
         
         // Create object store for tiles
         if (!db.objectStoreNames.contains('tiles')) {
@@ -102,16 +102,16 @@ class OfflineMapsService {
     try {
       const request = indexedDB.open('OfflineMapsDB', 1)
       
-      request.onsuccess = (event) => {
-        const db = event.target.result
+      request.onsuccess = () => {
+        const db = request.result
         
         // Load tiles
         const tileTransaction = db.transaction(['tiles'], 'readonly')
         const tileStore = tileTransaction.objectStore('tiles')
         
         const tilesRequest = tileStore.getAll()
-        tilesRequest.onsuccess = (event) => {
-          const tiles = event.target.result
+        tilesRequest.onsuccess = () => {
+          const tiles = tilesRequest.result as any[]
           tiles.forEach((tile: any) => {
             this.cache.set(tile.url, {
               x: tile.x,
@@ -130,8 +130,8 @@ class OfflineMapsService {
         const routeStore = routeTransaction.objectStore('routes')
         
         const routesRequest = routeStore.getAll()
-        routesRequest.onsuccess = (event) => {
-          const routes = event.target.result
+        routesRequest.onsuccess = () => {
+          const routes = routesRequest.result as any[]
           routes.forEach((route: any) => {
             this.routes.set(route.id, {
               id: route.id,
@@ -155,8 +155,8 @@ class OfflineMapsService {
     try {
       const request = indexedDB.open('OfflineMapsDB', 1)
       
-      request.onsuccess = (event) => {
-        const db = event.target.result
+      request.onsuccess = () => {
+        const db = request.result
         const transaction = db.transaction(['tiles'], 'readwrite')
         const store = transaction.objectStore('tiles')
         
@@ -182,8 +182,8 @@ class OfflineMapsService {
     try {
       const request = indexedDB.open('OfflineMapsDB', 1)
       
-      request.onsuccess = (event) => {
-        const db = event.target.result
+      request.onsuccess = () => {
+        const db = request.result
         const transaction = db.transaction(['routes'], 'readwrite')
         const store = transaction.objectStore('routes')
         
@@ -295,8 +295,8 @@ class OfflineMapsService {
     try {
       const request = indexedDB.open('OfflineMapsDB', 1)
       
-      request.onsuccess = (event) => {
-        const db = event.target.result
+      request.onsuccess = () => {
+        const db = request.result
         const transaction = db.transaction(['tiles'], 'readwrite')
         const store = transaction.objectStore('tiles')
         
@@ -319,8 +319,8 @@ class OfflineMapsService {
     try {
       const request = indexedDB.open('OfflineMapsDB', 1)
       
-      request.onsuccess = (event) => {
-        const db = event.target.result
+      request.onsuccess = () => {
+        const db = request.result
         const transaction = db.transaction(['routes'], 'readwrite')
         const store = transaction.objectStore('routes')
         
@@ -375,8 +375,8 @@ class OfflineMapsService {
     try {
       const request = indexedDB.open('OfflineMapsDB', 1)
       
-      request.onsuccess = (event) => {
-        const db = event.target.result
+      request.onsuccess = () => {
+        const db = request.result
         
         // Clear tiles
         const tileTransaction = db.transaction(['tiles'], 'readwrite')
