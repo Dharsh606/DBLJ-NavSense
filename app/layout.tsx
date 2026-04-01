@@ -7,8 +7,14 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: 'DBLJ NavSense - AI Navigation Assistant',
   description: 'Sense the Path. Navigate the World. AI-powered navigation assistant for visually impaired users.',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   themeColor: '#22c55e',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: 'no',
 }
 
 export default function RootLayout({
