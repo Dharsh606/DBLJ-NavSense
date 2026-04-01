@@ -551,7 +551,7 @@ class ThemeService {
     const root = document.documentElement
     
     // Color blind friendly colors
-    const colorBlindColors = {
+    const colorBlindColors: Record<string, string> = {
       primary: '#0066cc', // Blue
       secondary: '#ff6600', // Amber
       accent: '#00cc66', // Green
@@ -561,7 +561,7 @@ class ThemeService {
       info: '#0066cc' // Blue
     }
     
-    (Object.keys(colorBlindColors) as Array<keyof typeof colorBlindColors>).forEach(key => {
+    Object.keys(colorBlindColors).forEach(key => {
       const cssVar = `--color-${key.replace('_', '-')}`
       root.style.setProperty(cssVar, colorBlindColors[key])
     })
