@@ -166,12 +166,11 @@ class NavigationService {
 }
 
 // Initialize global navigation service
-declare global {
-  interface Window {
-    initMap: () => void;
-    navigationService: NavigationService;
-  }
+export const navigationService = new NavigationService()
+
+// Initialize window service only on client side
+if (typeof window !== 'undefined') {
+  (window as any).navigationService = navigationService
 }
 
-export const navigationService = new NavigationService()
 export default NavigationService
