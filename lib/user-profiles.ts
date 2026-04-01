@@ -311,7 +311,7 @@ class UserProfileService {
     this.saveSessions()
     
     console.log(`User session created: ${sessionId}`)
-    return sessionId
+    return session
   }
 
   // Get device information
