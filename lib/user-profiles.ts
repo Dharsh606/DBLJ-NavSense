@@ -330,7 +330,7 @@ class UserProfileService {
     // Common screen reader detection
     return (
       'speechSynthesis' in window ||
-      window.speechSynthesis?.getVoices().length > 0 ||
+      (window as any).speechSynthesis?.getVoices().length > 0 ||
       // Check for common screen reader software
       /JAWS|NVDA|VoiceOver|TalkBack|ChromeVox/i.test(navigator.userAgent)
     )
