@@ -84,6 +84,10 @@ class ObstacleDetectionService {
     const ctx = canvas.getContext('2d')
     canvas.width = 640
     canvas.height = 480
+    if (!ctx) {
+      this.isDetecting = false
+      throw new Error('Canvas 2D context not available')
+    }
 
     const detectFrame = async () => {
       if (!this.isDetecting || !this.model) return
