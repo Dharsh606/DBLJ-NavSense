@@ -484,19 +484,21 @@ export default function GPSTrackingPage() {
                     
                     {/* Location Points */}
                     {entry.locations.map((location, locIndex) => (
-                      <div key={locIndex} className="bg-gray-600 rounded p-2 mb-1">
-                        <div className="text-xs text-gray-400">
-                          {new Date(location.timestamp).toLocaleTimeString()}
+                      location && (
+                        <div key={locIndex} className="bg-gray-600 rounded p-2 mb-1">
+                          <div className="text-xs text-gray-400">
+                            {new Date(location.timestamp).toLocaleTimeString()}
+                          </div>
+                          <div className="text-sm text-white">
+                            {location.latitude.toFixed(6)}°, {location.longitude.toFixed(6)}°
+                            {location.speed && (
+                              <span className="text-gray-400 ml-2">
+                                {formatSpeed(location.speed)}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="text-sm text-white">
-                          {location.latitude.toFixed(6)}°, {location.longitude.toFixed(6)}°
-                          {location.speed && (
-                            <span className="text-gray-400 ml-2">
-                              {formatSpeed(location.speed)}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                      )
                     ))}
                   </motion.div>
                 ))
