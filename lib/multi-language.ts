@@ -536,7 +536,7 @@ class MultiLanguageService {
   // Get localized content
   getLocalizedContent(): LocalizedContent {
     const language = this.getCurrentLanguageInfo()
-    const translations = this.getLanguageTranslations(language.code)
+    const translations = this.getLanguageTranslations(language?.code ?? this.fallbackLanguage)
     
     return {
       welcome: translations.welcome,
