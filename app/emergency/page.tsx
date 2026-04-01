@@ -16,6 +16,8 @@ import {
   Volume2,
   VolumeX
 } from 'lucide-react'
+import { storageService } from '@/lib/storage-service'
+import { hasWebShare } from '@/lib/browser-utils'
 
 interface EmergencyContact {
   id: string
@@ -63,14 +65,9 @@ export default function EmergencyPage() {
   }, [isAlertActive, alertCountdown])
 
   const loadEmergencyContacts = () => {
-    // Load saved emergency contacts from localStorage
-    const savedContacts = localStorage.getItem('emergencyContacts')
-    if (savedContacts) {
-      try {
-        setContacts(JSON.parse(savedContacts))
-      } catch (error) {
-        console.error('Error loading contacts:', error)
-      }
+    const saved = storageService.get<EmergencyContact[]>('emergencyContacts', [])
+    if (saved.length) {
+      setContacts(saved)
     } else {
       // Set default contacts
       const defaultContacts: EmergencyContact[] = [
@@ -90,7 +87,7 @@ export default function EmergencyPage() {
         }
       ]
       setContacts(defaultContacts)
-      localStorage.setItem('emergencyContacts', JSON.stringify(defaultContacts))
+      storageService.set('emergencyContacts', defaultContacts)
     }
   }
 
@@ -213,17 +210,13 @@ export default function EmergencyPage() {
   }
 
   const sendEmergencyAlert = (contact: EmergencyContact) => {
-    // In a real implementation, this would send SMS, make phone calls, or use emergency APIs
     const locationText = currentLocation 
       ? `Location: ${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`
       : 'Location unavailable'
     
     const message = `EMERGENCY ALERT from DBLJ NavSense user. ${locationText}. Please contact immediately.`
-    
-    console.log(`Emergency alert sent to ${contact.name} (${contact.phone}): ${message}`)
-    
-    // Simulate sending SMS/making call
-    // In production, you would use services like Twilio, emergency APIs, etc.
+    const smsBody = encodeURIComponent(message)
+    window.location.href = `sms:${contact.phone}?body=${smsBody}`
   }
 
   const playAlertSound = () => {
@@ -253,19 +246,16 @@ export default function EmergencyPage() {
   }
 
   const callContact = (contact: EmergencyContact) => {
-    // In a real implementation, this would initiate a phone call
     speak(`Calling ${contact.name}`)
-    
-    // Use tel: protocol to initiate phone call
     window.location.href = `tel:${contact.phone}`
   }
 
   const shareLocation = () => {
-    if (currentLocation && navigator.share) {
+    if (currentLocation && hasWebShare()) {
       navigator.share({
         title: 'My Location',
         text: `My current location: ${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`,
-        url: `https://maps.google.com/?q=${currentLocation.lat},${currentLocation.lng}`
+        url: `https://www.openstreetmap.org/?mlat=${currentLocation.lat}&mlon=${currentLocation.lng}#map=17/${currentLocation.lat}/${currentLocation.lng}`
       }).catch(console.error)
     } else if (currentLocation) {
       // Fallback: copy to clipboard

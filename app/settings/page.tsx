@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { storageService } from '@/lib/storage-service'
 import { 
   ArrowLeft,
   Volume2,
@@ -90,19 +91,17 @@ export default function SettingsPage() {
   }, [])
 
   const loadSettings = () => {
-    const savedSettings = localStorage.getItem('navsenseSettings')
-    if (savedSettings) {
-      try {
-        setSettings(JSON.parse(savedSettings))
-      } catch (error) {
-        console.error('Error loading settings:', error)
-      }
+    try {
+      const savedSettings = storageService.get<Settings | null>('navsenseSettings', null)
+      if (savedSettings) setSettings(savedSettings)
+    } catch (error) {
+      console.error('Error loading settings:', error)
     }
   }
 
   const saveSettings = (newSettings: Settings) => {
     setSettings(newSettings)
-    localStorage.setItem('navsenseSettings', JSON.stringify(newSettings))
+    storageService.set('navsenseSettings', newSettings)
   }
 
   const checkVibrationSupport = () => {
@@ -577,7 +576,7 @@ export default function SettingsPage() {
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               if (confirm('Are you sure you want to reset all settings to default?')) {
-                localStorage.removeItem('navsenseSettings')
+                storageService.remove('navsenseSettings')
                 window.location.reload()
               }
             }}

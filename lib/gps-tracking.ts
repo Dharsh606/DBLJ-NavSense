@@ -1,5 +1,6 @@
 // GPS Tracking and Location History Service
 // Advanced real-time GPS tracking with location history and analytics
+import { storageService } from '@/lib/storage-service'
 
 export interface LocationPoint {
   latitude: number
@@ -288,10 +289,12 @@ class GPSTrackingService {
   // Load location history from localStorage
   private loadLocationHistory(): void {
     try {
-      const saved = localStorage.getItem('locationHistory')
-      if (saved) {
-        this.locationHistory = JSON.parse(saved)
-      }
+      const parsed = storageService.get<LocationHistory[]>('locationHistory', [])
+      this.locationHistory = parsed.map((entry) => ({
+        ...entry,
+        startTime: new Date(entry.startTime),
+        endTime: entry.endTime ? new Date(entry.endTime) : undefined,
+      }))
     } catch (error) {
       console.error('Failed to load location history:', error)
     }
@@ -302,7 +305,7 @@ class GPSTrackingService {
     try {
       // Keep only last 50 entries to save space
       const recentHistory = this.locationHistory.slice(-50)
-      localStorage.setItem('locationHistory', JSON.stringify(recentHistory))
+      storageService.set('locationHistory', recentHistory)
     } catch (error) {
       console.error('Failed to save location history:', error)
     }
@@ -311,7 +314,7 @@ class GPSTrackingService {
   // Clear location history
   clearHistory(): void {
     this.locationHistory = []
-    localStorage.removeItem('locationHistory')
+    storageService.remove('locationHistory')
   }
 
   // Export location history

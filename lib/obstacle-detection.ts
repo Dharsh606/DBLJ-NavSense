@@ -21,6 +21,8 @@ class ObstacleDetectionService {
   private model: cocoSsd.ObjectDetection | null = null
   private isInitialized: boolean = false
   private isDetecting: boolean = false
+  private lastWarningAt = 0
+  private warningCooldownMs = 2500
 
   constructor() {
     this.model = null
@@ -30,21 +32,12 @@ class ObstacleDetectionService {
 
   // Initialize the AI model
   async initializeModel(): Promise<void> {
+    if (this.isInitialized && this.model) return
     try {
       console.log('Loading COCO-SSD model...')
-      
-      // Load the COCO-SSD model
-      this.model = await cocoSsd.load()
-      
-      // Warm up the model
-      const dummyInput = tf.zeros([1, 300, 300, 3])
-      await this.model.execute(dummyInput)
-      
+      this.model = await cocoSsd.load({ base: 'mobilenet_v2' })
       this.isInitialized = true
       console.log('Model loaded successfully')
-      
-      // Clean up
-      dummyInput.dispose()
     } catch (error) {
       console.error('Failed to load model:', error)
       throw new Error('Failed to initialize obstacle detection model')
@@ -76,6 +69,7 @@ class ObstacleDetectionService {
       videoElement.srcObject = stream
 
       // Process video frames for obstacle detection
+      await videoElement.play()
       this.processVideoFrames(videoElement)
     } catch (error) {
       console.error('Failed to start camera:', error)
@@ -97,20 +91,11 @@ class ObstacleDetectionService {
       // Draw video frame to canvas
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height)
       
-      // Convert to tensor
-      const input = tf.browser.fromPixels(canvas)
-      
-      // Run object detection
-      const detections = await this.model.execute(input)
-      
-      // Process detections
+      const detections = await this.model.detect(canvas)
       const obstacles = this.processDetections(detections)
       
       // Send results to main app
       this.notifyObstacles(obstacles)
-      
-      // Clean up
-      input.dispose()
       
       // Continue detection
       requestAnimationFrame(detectFrame)
@@ -121,7 +106,7 @@ class ObstacleDetectionService {
   }
 
   // Process AI detection results
-  private processDetections(detections: any[]): DetectedObject[] {
+  private processDetections(detections: cocoSsd.DetectedObject[]): DetectedObject[] {
     const obstacles: DetectedObject[] = []
     
     // Filter for relevant obstacles for visually impaired users
@@ -132,15 +117,16 @@ class ObstacleDetectionService {
     ]
 
     for (const detection of detections) {
-      const detectionArray = detection as any[]
-      const [className, score, bbox] = detectionArray
-      
+      const className = detection.class
+      const score = detection.score
+      const bbox = detection.bbox
+
       // Only consider high-confidence detections
       if (score > 0.5 && relevantClasses.includes(className)) {
         obstacles.push({
           class: className,
           score,
-          bbox: [bbox[1], bbox[0], bbox[3] - bbox[1], bbox[2] - bbox[0]],
+          bbox: [bbox[0], bbox[1], bbox[2], bbox[3]],
           timestamp: Date.now()
         })
       }
@@ -182,6 +168,8 @@ class ObstacleDetectionService {
 
   // Voice feedback for obstacle warnings
   private speakObstacleWarning(obstacles: DetectedObject[]): void {
+    if (Date.now() - this.lastWarningAt < this.warningCooldownMs) return
+    this.lastWarningAt = Date.now()
     const messages = obstacles.map(obj => {
       const distance = this.estimateDistance(obj.bbox)
       const direction = this.getDirection(obj.bbox)

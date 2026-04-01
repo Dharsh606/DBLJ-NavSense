@@ -1,5 +1,6 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import AppBootstrap from '@/components/app-bootstrap'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,14 +20,10 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#16a34a" />
-        <script
-          async
-          defer
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initMap`}
-        />
+        <meta name="theme-color" content="#16a34a" />
       </head>
       <body className={inter.className}>
+        <AppBootstrap />
         <div id="root">
           {children}
         </div>

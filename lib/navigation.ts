@@ -1,4 +1,4 @@
-// Navigation Service for Google Maps Integration
+// Navigation Service for OSM + OSRM (free stack)
 
 export interface Location {
   lat: number;
@@ -7,58 +7,27 @@ export interface Location {
 }
 
 export interface Route {
-  steps: any[];
-  duration: string;
-  distance: string;
-  overview_path: any[];
+  steps: Array<{
+    instruction: string
+    distance: { text: string; value: number }
+    duration: { text: string; value: number }
+    maneuver?: string
+    location: Location
+  }>
+  duration: string
+  distance: string
+  overview_path: Location[]
 }
 
 export interface Place {
-  place_id: string;
-  name: string;
-  address: string;
-  location: Location;
+  place_id: string
+  name: string
+  address: string
+  location: Location
 }
 
 class NavigationService {
-  private map: any = null;
-  private directionsService: any = null;
-  private placesService: any = null;
-  private currentRoute: Route | null = null;
-
-  constructor() {
-    this.initializeServices();
-  }
-
-  private initializeServices() {
-    if (typeof window !== 'undefined' && window.google && window.google.maps) {
-      this.directionsService = new window.google.maps.DirectionsService();
-    }
-  }
-
-  initializeMap(mapElement: HTMLElement): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!window.google || !window.google.maps) {
-        reject(new Error('Google Maps not loaded'));
-        return;
-      }
-
-      const mapOptions = {
-        center: { lat: 0, lng: 0 },
-        zoom: 15,
-        mapTypeId: window.google.maps.MapTypeId.ROADMAP,
-        zoomControl: true,
-        streetViewControl: false,
-        fullscreenControl: false,
-        mapTypeControl: false,
-      };
-
-      this.map = new window.google.maps.Map(mapElement, mapOptions);
-      this.placesService = new window.google.maps.places.PlacesService(this.map);
-      
-      resolve(this.map);
-    });
-  }
+  private currentRoute: Route | null = null
 
   async getCurrentLocation(): Promise<Location> {
     return new Promise((resolve, reject) => {
@@ -72,107 +41,98 @@ class NavigationService {
           resolve({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
+          })
         },
         (error) => {
-          reject(error);
+          reject(error)
         },
         {
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 60000,
-        }
-      );
-    });
+        },
+      )
+    })
   }
 
   async searchPlaces(query: string): Promise<Place[]> {
-    return new Promise((resolve, reject) => {
-      if (!this.placesService) {
-        reject(new Error('Places service not initialized'));
-        return;
-      }
-
-      const request = {
-        query,
-        fields: ['place_id', 'name', 'formatted_address', 'geometry'],
-      };
-
-      this.placesService.textSearch(request, (results: any, status: any) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          const places: Place[] = results.map((place: any) => ({
-            place_id: place.place_id!,
-            name: place.name!,
-            address: place.formatted_address!,
-            location: {
-              lat: place.geometry!.location!.lat(),
-              lng: place.geometry!.location!.lng(),
-            },
-          }));
-          resolve(places);
-        } else {
-          reject(new Error('Place search failed'));
-        }
-      });
-    });
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`,
+      { headers: { Accept: 'application/json' } },
+    )
+    if (!response.ok) throw new Error('Place search failed')
+    const results: any[] = await response.json()
+    return results.map((place) => ({
+      place_id: String(place.place_id ?? place.osm_id),
+      name: String(place.display_name).split(',')[0],
+      address: String(place.display_name),
+      location: {
+        lat: Number(place.lat),
+        lng: Number(place.lon),
+      },
+    }))
   }
 
   async getDirections(origin: Location, destination: Location): Promise<Route> {
-    return new Promise((resolve, reject) => {
-      if (!this.directionsService) {
-        reject(new Error('Directions service not initialized'));
-        return;
-      }
+    const url = `https://router.project-osrm.org/route/v1/foot/${origin.lng},${origin.lat};${destination.lng},${destination.lat}?overview=full&geometries=geojson&steps=true`
+    const response = await fetch(url)
+    if (!response.ok) throw new Error('Directions request failed')
+    const data = await response.json()
+    const routeData = data.routes?.[0]
+    if (!routeData) throw new Error('No route available')
 
-      const request = {
-        origin: new window.google.maps.LatLng(origin.lat, origin.lng),
-        destination: new window.google.maps.LatLng(destination.lat, destination.lng),
-        travelMode: window.google.maps.TravelMode.WALKING,
-        provideRouteAlternatives: false,
-      };
+    const steps = (routeData.legs?.[0]?.steps ?? []).map((step: any) => ({
+      instruction: step.maneuver?.instruction ?? `Continue on ${step.name || 'current path'}`,
+      distance: {
+        text: `${Math.round(step.distance)} m`,
+        value: step.distance,
+      },
+      duration: {
+        text: `${Math.round(step.duration)} sec`,
+        value: step.duration,
+      },
+      maneuver: step.maneuver?.type,
+      location: {
+        lat: step.maneuver?.location?.[1],
+        lng: step.maneuver?.location?.[0],
+      },
+    }))
 
-      this.directionsService.route(request, (result: any, status: any) => {
-        if (status === window.google.maps.DirectionsStatus.OK && result) {
-          const route = result.routes[0];
-          const leg = route.legs[0];
-          
-          const directionsRoute: Route = {
-            steps: leg.steps,
-            duration: leg.duration!.text,
-            distance: leg.distance!.text,
-            overview_path: route.overview_path,
-          };
-          
-          this.currentRoute = directionsRoute;
-          resolve(directionsRoute);
-        } else {
-          reject(new Error('Directions request failed'));
-        }
-      });
-    });
+    const directionsRoute: Route = {
+      steps,
+      duration: `${Math.round(routeData.duration / 60)} min`,
+      distance: `${(routeData.distance / 1000).toFixed(2)} km`,
+      overview_path: (routeData.geometry?.coordinates ?? []).map((point: [number, number]) => ({
+        lat: point[1],
+        lng: point[0],
+      })),
+    }
+
+    this.currentRoute = directionsRoute
+    return directionsRoute
   }
 
   getCurrentRoute(): Route | null {
-    return this.currentRoute;
+    return this.currentRoute
   }
 
   // Voice navigation instructions
   generateVoiceInstructions(route: Route): string[] {
-    const instructions: string[] = [];
+    const instructions: string[] = []
     
     route.steps.forEach((step, index) => {
-      const instruction = step.instructions.replace(/<[^>]*>/g, ''); // Remove HTML tags
-      const distance = step.distance?.text || '';
+      const instruction = step.instruction
+      const distance = step.distance?.text || ''
       
       // Add step number for clarity
       const stepInstruction = index === 0 
         ? `Start: ${instruction}. Distance: ${distance}`
         : `Step ${index + 1}: ${instruction}. Distance: ${distance}`;
         
-      instructions.push(stepInstruction);
-    });
+      instructions.push(stepInstruction)
+    })
 
-    return instructions;
+    return instructions
   }
 
   // Get next step for voice guidance
@@ -181,11 +141,11 @@ class NavigationService {
       return null;
     }
 
-    const step = this.currentRoute.steps[currentStepIndex];
-    const instruction = step.instructions.replace(/<[^>]*>/g, '');
-    const distance = step.distance?.text || '';
+    const step = this.currentRoute.steps[currentStepIndex]
+    const instruction = step.instruction
+    const distance = step.distance?.text || ''
     
-    return `${instruction}. Continue for ${distance}`;
+    return `${instruction}. Continue for ${distance}`
   }
 
   // Calculate distance to next turn
@@ -194,7 +154,14 @@ class NavigationService {
       return null;
     }
 
-    return this.currentRoute.steps[currentStepIndex].distance?.text || null;
+    return this.currentRoute.steps[currentStepIndex].distance?.text || null
+  }
+
+  shouldReroute(current: Location, expected: Location, thresholdMeters = 40): boolean {
+    const dx = (current.lat - expected.lat) * 111320
+    const dy = (current.lng - expected.lng) * 111320
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    return distance > thresholdMeters
   }
 }
 
@@ -206,13 +173,5 @@ declare global {
   }
 }
 
-export const navigationService = new NavigationService();
-
-// Initialize Google Maps callback
-if (typeof window !== 'undefined') {
-  window.initMap = () => {
-    console.log('Google Maps initialized');
-  };
-}
-
-export default NavigationService;
+export const navigationService = new NavigationService()
+export default NavigationService
