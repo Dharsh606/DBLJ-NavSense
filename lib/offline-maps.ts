@@ -162,8 +162,8 @@ class OfflineMapsService {
         
         tile.lastAccessed = Date.now()
         
-        const request = store.put(tile)
-        request.onsuccess = () => {
+        const putRequest = store.put(tile)
+        putRequest.onsuccess = () => {
           this.cache.set(tile.url, tile)
           this.cleanupOldTiles()
         }
@@ -190,8 +190,8 @@ class OfflineMapsService {
         route.cached = true
         route.lastUsed = Date.now()
         
-        const request = store.put(route)
-        request.onsuccess = () => {
+        const putRequest = store.put(route)
+        putRequest.onsuccess = () => {
           this.routes.set(route.id, route)
           this.cleanupOldRoutes()
         }
