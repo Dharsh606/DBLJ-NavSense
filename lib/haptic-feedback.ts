@@ -199,14 +199,23 @@ class HapticFeedbackService {
     const { pattern, delay } = this.vibrationQueue.shift()!
     
     setTimeout(() => {
-      this.vibratePattern(pattern.pattern, pattern.intensity)
+      this.vibratePattern(pattern)
       this.isVibrating = false
       
       // Execute next in queue
       if (this.vibrationQueue.length > 0) {
-        setTimeout(() => this.executeVibrationQueue(), delay)
+        this.executeVibrationQueue()
       }
-    }, pattern.pattern[0] + pattern.pattern[1])
+    }, delay)
+  }
+
+  private vibratePattern(pattern: number[]): void {
+    if (!this.settings.enabled || !this.isSupported()) return
+    try {
+      navigator.vibrate(pattern)
+    } catch (error) {
+      console.error('Haptic feedback failed:', error)
+    }
   }
 
   // Simple haptic feedback methods
