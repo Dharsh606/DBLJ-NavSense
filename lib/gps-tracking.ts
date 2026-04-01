@@ -275,9 +275,12 @@ class GPSTrackingService {
   private getMaxSpeed(): number {
     let maxSpeed = 0
     this.locationHistory.forEach(entry => {
-      if (entry.locations.some(loc => loc.speed && loc.speed > maxSpeed)) {
-        maxSpeed = Math.max(maxSpeed, ...entry.locations.map(loc => loc.speed || 0))
-      }
+      entry.locations.forEach(loc => {
+        const speed = loc?.speed
+        if (typeof speed === 'number' && speed > maxSpeed) {
+          maxSpeed = speed
+        }
+      })
     })
     return maxSpeed
   }
