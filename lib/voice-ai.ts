@@ -154,7 +154,7 @@ class VoiceCommandService {
       
     } catch (error) {
       console.error('Failed to start voice recognition:', error)
-      this.speakError(`Failed to start voice recognition: ${error.message}`)
+      this.speakError(`Failed to start voice recognition: ${(error as Error).message}`)
     }
   }
 
